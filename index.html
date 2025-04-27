@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Karaoke Song Selector</title>
+    <!-- Link to the optional CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Karaoke Song Selector</h1>
+        <p>Find karaoke songs that fit your vocal range!</p>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="/">
+            <fieldset class="range-selector">
+                <legend>Select Your Vocal Range</legend>
+                <div class="form-group">
+                    <label for="lowest_note">Lowest Note:</label>
+                    <select name="lowest_note" id="lowest_note">
+                        {% for note in low_notes %}
+                            <option value="{{ note }}" {% if note == selected_low %}selected{% endif %}>
+                                {{ note }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="highest_note">Highest Note:</label>
+                    <select name="highest_note" id="highest_note">
+                         {% for note in high_notes %}
+                            <option value="{{ note }}" {% if note == selected_high %}selected{% endif %}>
+                                {{ note }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </fieldset>
+
+            <button type="submit">Find Suitable Songs</button>
+        </form>
+
+        {% if songs is not none %}
+            <div class="results">
+                <h2>Recommended Songs</h2>
+                {% if songs %}
+                    <ul>
+                        {% for song in songs %}
+                            <li>
+                                <strong>🎵 {{ song.title }}</strong> by {{ song.artist }} <br>
+                                <small>Vocal Range: {{ song.range }}</small>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No songs found matching your selected vocal range. Try adjusting the notes!</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    </div> <!-- /container -->
+</body>
+</html>
